@@ -3,7 +3,7 @@
 class Judge_Model extends CI_Model
 {
      function __construct()
-     {
+     {dfsfddfsdfsdfdfsdfdf
           // Call the Model constructor
           parent::__construct();
           $this->load->database();
