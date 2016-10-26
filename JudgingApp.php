@@ -33,16 +33,16 @@ class JudgingApp extends CI_Controller
       {
         //check if username and password is correct
         $usr_result = $this->Judge_Model->get_user($username, $password);
+
         if ($usr_result > 0)
         {
           //set the session variables
-          $sessiondata = array('login' => TRUE,'JudgeName' => $username,'uid' => $uresult[0]->id);
+          $sessiondata = array('login' => TRUE,'JudgeName' => $username,'uid' => $uresult[0]->JudgeID);
           $sessiondata = array($this->session->set_userdata($sessiondata));
           redirect("JudgingApp/MainMenu");
           }
           else
           {
-
            redirect('JudgingApp/index');
           }
         }
@@ -52,29 +52,45 @@ class JudgingApp extends CI_Controller
         }
       }
     }
-    public function view($slug = NULL)
- {
-     $data['Poster'] = $this->Judge_Model->get_Posters($slug);
+    public function view($PosterID = NULL)
+  {
+          $this->load->helper('form');
+          $this->load->library('form_validation');
+          $data['Poster_item'] = $this->Judge_Model->get_Posters($PosterID);
+          if (empty($data['Poster_item']))
+          {
+                  show_404();
+          }
+          $data['PosterID'] = $data['Poster_item']['PosterID'];
 
-     if (empty($data['Poster_item']))
-     {
-             show_404();
-     }
 
-     $data['title'] = $data['Poster_item']['title'];
-     //$this->load->view('templates/header', $data);
-     //$this->load->view('/view', $data);
-     //$this->load->view('templates/footer');
- }
+          if ($this->form_validation->run() === FALSE)
+          {
+            $this->load->view('JudgingAPP/view', $data);
+          }
+          if (isset($this->session->userdata['JudgeName']))
+          {
+            echo $this->session->userdata['JudgeName'];
+          }
+          else
+          {
+                $this->Judge_Model->Post_Score();
+               redirect('JudgingApp/MainMenu');
+          }
+
+
+  }
     public function MainMenu()
     {
       $data['Poster'] = $this->Judge_Model->get_Posters();
       $this->load->view('JudgingApp/MainMenu',$data);
-
-
       if (isset($this->session->userdata['JudgeName']))
       {
-        echo $this->session->userdata['JudgeName'];
+          echo $this->session->userdata['JudgeName'];
+          echo $this->session->userdata['uid'];
+          echo $this->session->userdata['Pass'];
+
+
       }
       else
       {
