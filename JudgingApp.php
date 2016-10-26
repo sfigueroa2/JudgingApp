@@ -84,6 +84,12 @@ class JudgingApp extends CI_Controller
     {
       $data['Poster'] = $this->Judge_Model->get_Posters();
       $this->load->view('JudgingApp/MainMenu',$data);
+      $this->load->view('Templates/Header');
+      if ($this->input->post('btn_login') == "Login")
+      {
+        session_destroy();
+      }
+     
       if (isset($this->session->userdata['JudgeName']))
       {
           echo $this->session->userdata['JudgeName'];
